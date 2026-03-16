@@ -9,7 +9,14 @@ Run with:
 """
 
 import json
+import os
 import streamlit as st
+
+# Streamlit Cloud injects secrets via st.secrets, not os.environ.
+# This bridges the gap so pipeline.py can always use os.environ.get("GROQ_API_KEY").
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+
 from pipeline import (
     classifier_agent,
     enricher_agent,
