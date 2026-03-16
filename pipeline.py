@@ -27,7 +27,16 @@ from pydantic import BaseModel, ValidationError, field_validator
 
 # ── Client ────────────────────────────────────────────────────────────────────
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+# Client is initialized lazily on first use so that Streamlit Cloud has time
+# to inject GROQ_API_KEY from st.secrets into os.environ before it's read.
+_client: Groq | None = None
+
+def get_client() -> Groq:
+    global _client
+    if _client is None:
+        _client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    return _client
+
 MODEL = "llama3-8b-8192"
 MAX_RETRIES = 3
 
@@ -125,7 +134,7 @@ def call_agent(
     for attempt in range(1, MAX_RETRIES + 1):
         raw_response = ""
         try:
-            response = client.chat.completions.create(
+            response = get_client().chat.completions.create(
                 model=MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=512,
