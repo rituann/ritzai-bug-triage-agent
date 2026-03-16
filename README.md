@@ -4,6 +4,8 @@ A learning project demonstrating **agentic AI patterns** using a 4-agent pipelin
 
 > Built to study agentic design patterns relevant to PM roles in AI product teams.
 
+**Live demo:** https://bug-triage-agent.streamlit.app
+
 ---
 
 ## Architecture
