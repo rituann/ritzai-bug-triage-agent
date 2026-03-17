@@ -161,6 +161,7 @@ def call_agent(
             return result
 
         except (json.JSONDecodeError, ValidationError, KeyError) as e:
+            # Retryable: bad JSON or schema mismatch — try again
             agent_log["attempts"].append({
                 "attempt": attempt,
                 "raw_response": raw_response,
@@ -173,6 +174,16 @@ def call_agent(
                     f"[{agent_name}] failed after {MAX_RETRIES} attempts. "
                     f"Last error: {e}"
                 )
+        except Exception as e:
+            # Non-retryable: API errors (bad key, invalid model, rate limit, etc.)
+            agent_log["attempts"].append({
+                "attempt": attempt,
+                "raw_response": raw_response,
+                "status": "api_error",
+                "error": f"{type(e).__name__}: {e}",
+            })
+            run_log["agents"].append(agent_log)
+            raise RuntimeError(f"[{agent_name}] API error: {type(e).__name__}: {e}") from e
 
 
 # ── Agents ────────────────────────────────────────────────────────────────────

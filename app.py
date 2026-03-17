@@ -79,7 +79,7 @@ if run and bug_report.strip():
             classification = classifier_agent(bug_report, context, run_log)
             context["classification"] = classification.model_dump()
             s.update(label="🔍 Agent 1: Classifier ✅", state="complete")
-        except RuntimeError as e:
+        except Exception as e:
             s.update(label="🔍 Agent 1: Classifier ❌", state="error")
             st.error(str(e))
             st.stop()
@@ -93,7 +93,7 @@ if run and bug_report.strip():
             enrichment = enricher_agent(bug_report, context, run_log)
             context["enrichment"] = enrichment.model_dump()
             s.update(label="🔎 Agent 2: Enricher ✅", state="complete")
-        except RuntimeError as e:
+        except Exception as e:
             s.update(label="🔎 Agent 2: Enricher ❌", state="error")
             st.error(str(e))
             st.stop()
@@ -107,7 +107,7 @@ if run and bug_report.strip():
             routing = router_agent(context, run_log)
             context["routing"] = routing.model_dump()
             s.update(label="📬 Agent 3: Router ✅", state="complete")
-        except RuntimeError as e:
+        except Exception as e:
             s.update(label="📬 Agent 3: Router ❌", state="error")
             st.error(str(e))
             st.stop()
@@ -121,7 +121,7 @@ if run and bug_report.strip():
             verdict = judge_agent(context, run_log)
             context["verdict"] = verdict.model_dump()
             s.update(label="⚖️ Agent 4: Judge ✅", state="complete")
-        except RuntimeError as e:
+        except Exception as e:
             s.update(label="⚖️ Agent 4: Judge ❌", state="error")
             st.error(str(e))
             st.stop()
