@@ -37,7 +37,7 @@ def get_client() -> Groq:
         _client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     return _client
 
-MODEL = "llama3-8b-8192"
+MODEL = "llama-3.1-8b-instant"
 MAX_RETRIES = 3
 
 # ── Pydantic output schemas ────────────────────────────────────────────────────
